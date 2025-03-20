@@ -30,7 +30,7 @@ public class QuestionService {
 
         //연결
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByUsername(username).orElseThrow();
+        User user = userRepository.findByUserName(username).orElseThrow();
 
         user.addQuestion(question);
         userRepository.save(user);

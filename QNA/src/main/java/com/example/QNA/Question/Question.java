@@ -24,5 +24,7 @@ public class Question {
     @ManyToOne
     private User user;
 
+    @OneToOne(mappedBy = "question")
+    private Answer answer;
 
 }

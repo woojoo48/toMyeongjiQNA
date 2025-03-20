@@ -29,7 +29,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserResponseDTO readOneUser(String username) {
-        User userEntity = userRepository.findByUsername(username).orElseThrow();
+        User userEntity = userRepository.findByUserName(username).orElseThrow();
 
         UserResponseDTO dto = new UserResponseDTO();
         dto.setUserName(userEntity.getUserName());

@@ -26,7 +26,7 @@ public class User {
     private StudentClub studentClub;
     private String role;
 
-    @OneToMany(mappedBy = "User", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Question> questionList = new ArrayList<>();
 
     public void addQuestion(Question question) {
