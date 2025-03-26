@@ -1,12 +1,12 @@
 package com.example.QNA.Question;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/question")
 public class QuestionController {
     private final QuestionService questionService;
 
@@ -14,27 +14,23 @@ public class QuestionController {
         this.questionService = questionService;
     }
 
-    @GetMapping("/question/create")
-    public String createQuestion(){
-        return "question/create";
-    }
-
-    @PostMapping("/question/create")
-    public String createQuestionProcess(QuestionRequestDTO dto){
+    @PostMapping("/create")
+    public ResponseEntity<QuestionResponseDTO> createQuestion(@RequestBody QuestionRequestDTO dto) {
         questionService.createQuestion(dto);
-        return "redirect:/question/create";
+        // 일반적으로 생성된 리소스의 ID를 반환하거나, 생성된 리소스 자체를 반환합니다
+        // 여기서는 간단히 dto의 id를 사용하고 있지만, 실제로는 생성된 Question의 ID를 사용해야 합니다
+        return ResponseEntity.ok(questionService.readOneQuestion(dto.getId()));
     }
 
-    @GetMapping("/question/read/{id}")
-    public String readQuestion(Model model, @PathVariable("id") long id){
-        model.addAttribute("Question", questionService.readOneQuestion(id));
-
-        return "question/read";
+    @GetMapping("/{id}")
+    public ResponseEntity<QuestionResponseDTO> getQuestion(@PathVariable("id") Long id) {
+        QuestionResponseDTO question = questionService.readOneQuestion(id);
+        return ResponseEntity.ok(question);
     }
-    //모든 질문 읽기
-    @GetMapping("/question/list")
-    public String readAllQuestions(Model model){
-        model.addAttribute("questions", questionService.readAllQuestion());
-        return "question/list";
+
+    @GetMapping("/list")
+    public ResponseEntity<List<QuestionResponseDTO>> getAllQuestions() {
+        List<QuestionResponseDTO> questions = questionService.readAllQuestion();
+        return ResponseEntity.ok(questions);
     }
 }

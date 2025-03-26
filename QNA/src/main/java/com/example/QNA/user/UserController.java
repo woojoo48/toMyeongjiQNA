@@ -1,10 +1,12 @@
 package com.example.QNA.user;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/user")
 public class UserController {
     private final UserService userService;
 
@@ -12,15 +14,22 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/user/create")
-    public String createUser(){
-        return "create";
-    }
-
-    @PostMapping("/user/create")
-    public String createProcess(UserRequestDTO userRequestDTO){
+    @PostMapping("/create")
+    public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserRequestDTO userRequestDTO) {
         userService.createUser(userRequestDTO);
-        return "redirect:/user/create";
+        UserResponseDTO responseDTO = userService.readOneUser(userRequestDTO.getUserName());
+        return ResponseEntity.ok(responseDTO);
     }
 
+    @GetMapping("/{username}")
+    public ResponseEntity<UserResponseDTO> getUser(@PathVariable("username") String username) {
+        UserResponseDTO responseDTO = userService.readOneUser(username);
+        return ResponseEntity.ok(responseDTO);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
+        List<UserResponseDTO> users = userService.readAllUsers();
+        return ResponseEntity.ok(users);
+    }
 }

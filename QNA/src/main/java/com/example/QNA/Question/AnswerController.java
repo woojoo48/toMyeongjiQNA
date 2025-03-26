@@ -1,12 +1,10 @@
 package com.example.QNA.Question;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
+@RequestMapping("/api/answer")
 public class AnswerController {
     private final AnswerService answerService;
     private final QuestionService questionService;
@@ -16,20 +14,17 @@ public class AnswerController {
         this.questionService = questionService;
     }
 
-    @GetMapping("/answer/create")
-    public String createAnswer(){
-        return "answer/create";
+    @PostMapping("/create/{questionId}")
+    public ResponseEntity<AnswerResponseDTO> createAnswer(
+            @RequestBody AnswerRequestDTO answerRequestDTO,
+            @PathVariable("questionId") Long questionId) {
+        answerService.createAnswer(answerRequestDTO, questionId);
+        return ResponseEntity.ok(answerService.readAnswer(questionId));
     }
 
-    @PostMapping("/answer/create")
-    public String createQuestionProcess(QuestionRequestDTO dto){
-        questionService.createQuestion(dto);
-        return "redirect:/answer/create";
-    }
-
-    @GetMapping("/answer/read/{questionid}")
-    public String readQuestion(Model model, @PathVariable("questionid") Long questionid){
-        model.addAttribute("Question", questionService.readOneQuestion(questionid));
-        return "answer/read";
+    @GetMapping("/{questionId}")
+    public ResponseEntity<AnswerResponseDTO> getAnswer(@PathVariable("questionId") Long questionId) {
+        AnswerResponseDTO answerResponseDTO = answerService.readAnswer(questionId);
+        return ResponseEntity.ok(answerResponseDTO);
     }
 }

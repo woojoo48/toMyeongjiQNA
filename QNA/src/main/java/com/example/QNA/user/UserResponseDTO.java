@@ -9,5 +9,8 @@ import lombok.Setter;
 public class UserResponseDTO {
     private Long id;
     private String userName;
-    private StudentClub studentClub;
+    private Long studentClubId;
+    private String studentClubName;
+    private String collegeName;
+    private String role;
 }

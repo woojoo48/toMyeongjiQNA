@@ -10,5 +10,6 @@ import org.springframework.stereotype.Service;
 public class UserRequestDTO {
     private Long id;
     private String userName;
-    private StudentClub studentClub;
+    private Long studentClubId;
+    private String role;
 }
