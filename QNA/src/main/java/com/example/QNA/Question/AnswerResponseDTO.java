@@ -9,4 +9,5 @@ public class AnswerResponseDTO {
     private Long id;
     private String questionTitle;
     private String contents;
+    private Long questionId;
 }

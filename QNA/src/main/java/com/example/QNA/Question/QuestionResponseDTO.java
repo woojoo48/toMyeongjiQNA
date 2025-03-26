@@ -8,5 +8,8 @@ import lombok.Setter;
 public class QuestionResponseDTO {
     private Long id;
     private String title;
-    private String content;
+    private String contents;
+    private Long userId;
+    private String userName;
+    private boolean hasAnswer;
 }

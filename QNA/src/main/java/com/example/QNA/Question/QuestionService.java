@@ -9,31 +9,35 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class QuestionService {
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
+    private final AnswerRepository answerRepository;
 
-    public QuestionService(QuestionRepository questionRepository, UserRepository userRepository) {
+    public QuestionService(QuestionRepository questionRepository, UserRepository userRepository, AnswerRepository answerRepository) {
         this.questionRepository = questionRepository;
         this.userRepository = userRepository;
+        this.answerRepository = answerRepository;
     }
 
     @Transactional
-    public void createQuestion(QuestionRequestDTO questionDTO) {
+    public Long createQuestion(QuestionRequestDTO questionDTO) {
         Question question = new Question();
         question.setTitle(questionDTO.getTitle());
         question.setContents(questionDTO.getContent());
 
-        questionRepository.save(question);
+//        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+//        User user = userRepository.findByUserName(username).orElseThrow();
+//        user.addQuestion(question);
+        // ->로그인 기능 미구현 으로 인해 질문 생성이 안되어, 인증 처리 기능 무효화 해둠. 로그인 기능 구현 혹은 리팩토링 필요할듯
+        // ->현재 이 코드들 주석 처리 해놓은 이유는 단지 질문이 등록 가능한지 테스트 하기위해
 
-        //연결
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByUserName(username).orElseThrow();
 
-        user.addQuestion(question);
-        userRepository.save(user);
+        Question savedQuestion = questionRepository.save(question);
+        return savedQuestion.getId();
     }
 
     @Transactional(readOnly = true)
@@ -43,7 +47,14 @@ public class QuestionService {
         QuestionResponseDTO dto = new QuestionResponseDTO();
         dto.setId(question.getId());
         dto.setTitle(question.getTitle());
-        dto.setContent(question.getContents());
+        dto.setContents(question.getContents());
+
+        if (question.getUser() != null) {
+            dto.setUserId(question.getUser().getId());
+            dto.setUserName(question.getUser().getUserName());
+        }
+
+        dto.setHasAnswer(question.getAnswer() != null);
 
         return dto;
     }
@@ -57,7 +68,14 @@ public class QuestionService {
             QuestionResponseDTO questionDTO = new QuestionResponseDTO();
             questionDTO.setId(question.getId());
             questionDTO.setTitle(question.getTitle());
-            questionDTO.setContent(question.getContents());
+            questionDTO.setContents(question.getContents());
+
+            if (question.getUser() != null) {
+                questionDTO.setUserId(question.getUser().getId());
+                questionDTO.setUserName(question.getUser().getUserName());
+            }
+            questionDTO.setHasAnswer(question.getAnswer() != null);
+
             dtos.add(questionDTO);
         }
         return dtos;
