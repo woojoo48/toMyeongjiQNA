@@ -20,6 +20,7 @@ public class QuestionController {
         return ResponseEntity.ok(questionService.readOneQuestion(newQuestionId));
     }
 
+    //질문 번호로 주소 찍어야 함
     @GetMapping("/{id}")
     public ResponseEntity<QuestionResponseDTO> getQuestion(@PathVariable("id") Long id) {
         QuestionResponseDTO question = questionService.readOneQuestion(id);

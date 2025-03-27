@@ -30,6 +30,13 @@ public class AnswerService {
         answer.setQuestion(question);
 
         Answer savedAnswer = answerRepository.save(answer);
+
+        AnswerResponseDTO responseDTO = new AnswerResponseDTO();
+        responseDTO.setId(savedAnswer.getId());
+        responseDTO.setQuestionTitle(savedAnswer.getQuestionTitle());
+        responseDTO.setContents(savedAnswer.getContents());
+        responseDTO.setQuestionId(questionId);
+
         return savedAnswer.getId();
     }
 

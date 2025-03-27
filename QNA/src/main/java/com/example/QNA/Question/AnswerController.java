@@ -18,8 +18,16 @@ public class AnswerController {
     public ResponseEntity<AnswerResponseDTO> createAnswer(
             @RequestBody AnswerRequestDTO answerRequestDTO,
             @PathVariable("questionId") Long questionId) {
-        answerService.createAnswer(answerRequestDTO, questionId);
-        return ResponseEntity.ok(answerService.readAnswer(questionId));
+        // 답변 생성 후 ID 반환
+        Long answerId = answerService.createAnswer(answerRequestDTO, questionId);
+
+        AnswerResponseDTO responseDTO = new AnswerResponseDTO();
+        responseDTO.setId(answerId);
+        responseDTO.setQuestionTitle(answerRequestDTO.getQuestionTitle());
+        responseDTO.setContents(answerRequestDTO.getContents());
+        responseDTO.setQuestionId(questionId);
+
+        return ResponseEntity.ok(responseDTO);
     }
 
     @GetMapping("/{questionId}")
