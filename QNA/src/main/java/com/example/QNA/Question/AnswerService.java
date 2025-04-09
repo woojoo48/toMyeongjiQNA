@@ -1,7 +1,8 @@
 package com.example.QNA.Question;
 
+import com.example.QNA.global.CustomException;
+import static com.example.QNA.global.ErrorMSG.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,16 +13,14 @@ public class AnswerService {
     @Autowired
     private QuestionRepository questionRepository;
 
-
     @Transactional
     public Long createAnswer(AnswerRequestDTO answerRequestDTO, Long questionId) {
-
         if (answerRepository.existsByQuestionId(questionId)) {
-            throw new IllegalStateException("해당 질문에는 이미 답변이 존재합니다.");
+            throw new CustomException(400, ALREADY_HAS_ANSWER);
         }
 
         Question question = questionRepository.findById(questionId)
-                .orElseThrow(() -> new IllegalArgumentException("질문을 찾을 수 없습니다. ID: " + questionId));
+                .orElseThrow(() -> new CustomException(400, NOT_FOUND_QUESTION + " ID: " + questionId));
 
         Answer answer = new Answer();
         answer.setQuestionTitle(answerRequestDTO.getQuestionTitle());
@@ -29,24 +28,17 @@ public class AnswerService {
         answer.setQuestion(question);
 
         Answer savedAnswer = answerRepository.save(answer);
-
-        AnswerResponseDTO responseDTO = new AnswerResponseDTO();
-        responseDTO.setId(savedAnswer.getId());
-        responseDTO.setQuestionTitle(savedAnswer.getQuestionTitle());
-        responseDTO.setContents(savedAnswer.getContents());
-        responseDTO.setQuestionId(questionId);
-
         return savedAnswer.getId();
     }
 
     @Transactional(readOnly = true)
     public AnswerResponseDTO readAnswer(Long questionId) {
         Question question = questionRepository.findById(questionId)
-                .orElseThrow(() -> new IllegalArgumentException("질문을 찾을 수 없습니다. ID: " + questionId));
+                .orElseThrow(() -> new CustomException(400, NOT_FOUND_QUESTION + " ID: " + questionId));
 
         Answer answer = question.getAnswer();
         if (answer == null) {
-            throw new IllegalStateException("해당 질문에 대한 답변이 없습니다.");
+            throw new CustomException(400, NOT_FOUND_ANSWER);
         }
 
         AnswerResponseDTO dto = new AnswerResponseDTO();
@@ -57,5 +49,4 @@ public class AnswerService {
 
         return dto;
     }
-
 }

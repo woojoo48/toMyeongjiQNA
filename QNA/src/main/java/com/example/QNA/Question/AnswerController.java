@@ -1,6 +1,6 @@
 package com.example.QNA.Question;
 
-import org.springframework.http.ResponseEntity;
+import com.example.QNA.global.ApiResponse;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,10 +15,10 @@ public class AnswerController {
     }
 
     @PostMapping("/create/{questionId}")
-    public ResponseEntity<AnswerResponseDTO> createAnswer(
+    public ApiResponse<AnswerResponseDTO> createAnswer(
             @RequestBody AnswerRequestDTO answerRequestDTO,
             @PathVariable("questionId") Long questionId) {
-        // 답변 생성 후 ID 반환
+
         Long answerId = answerService.createAnswer(answerRequestDTO, questionId);
 
         AnswerResponseDTO responseDTO = new AnswerResponseDTO();
@@ -27,12 +27,12 @@ public class AnswerController {
         responseDTO.setContents(answerRequestDTO.getContents());
         responseDTO.setQuestionId(questionId);
 
-        return ResponseEntity.ok(responseDTO);
+        return new ApiResponse<>(200, "답변이 정상적으로 생성되었습니다.", responseDTO);
     }
 
     @GetMapping("/{questionId}")
-    public ResponseEntity<AnswerResponseDTO> getAnswer(@PathVariable("questionId") Long questionId) {
+    public ApiResponse<AnswerResponseDTO> getAnswer(@PathVariable("questionId") Long questionId) {
         AnswerResponseDTO answerResponseDTO = answerService.readAnswer(questionId);
-        return ResponseEntity.ok(answerResponseDTO);
+        return new ApiResponse<>(200, "답변을 정상적으로 조회하였습니다.", answerResponseDTO);
     }
 }
