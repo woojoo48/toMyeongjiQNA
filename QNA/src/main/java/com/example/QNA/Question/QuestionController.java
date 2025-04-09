@@ -1,6 +1,6 @@
 package com.example.QNA.Question;
 
-import org.springframework.http.ResponseEntity;
+import com.example.QNA.global.ApiResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,21 +15,21 @@ public class QuestionController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<QuestionResponseDTO> createQuestion(@RequestBody QuestionRequestDTO dto) {
+    public ApiResponse<QuestionRequestDTO> createQuestion(@RequestBody QuestionRequestDTO dto) {
         Long newQuestionId = questionService.createQuestion(dto);
-        return ResponseEntity.ok(questionService.readOneQuestion(newQuestionId));
+        return new ApiResponse<>(200, "질문이 정상적으로 생성되었습니다.", dto);
     }
 
     //질문 번호로 주소 찍어야 함
     @GetMapping("/{id}")
-    public ResponseEntity<QuestionResponseDTO> getQuestion(@PathVariable("id") Long id) {
+    public ApiResponse<QuestionResponseDTO> getQuestion(@PathVariable("id") Long id) {
         QuestionResponseDTO question = questionService.readOneQuestion(id);
-        return ResponseEntity.ok(question);
+        return new ApiResponse<>(200, "질문을 정상적으로 조회하였습니다.", question);
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<QuestionResponseDTO>> getAllQuestions() {
+    public ApiResponse<List<QuestionResponseDTO>> getAllQuestions() {
         List<QuestionResponseDTO> questions = questionService.readAllQuestion();
-        return ResponseEntity.ok(questions);
+        return new ApiResponse<>(200, "질문목록을 정상적으로 조회하였습니다", questions);
     }
 }

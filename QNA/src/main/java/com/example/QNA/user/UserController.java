@@ -1,6 +1,6 @@
 package com.example.QNA.user;
 
-import org.springframework.http.ResponseEntity;
+import com.example.QNA.global.ApiResponse;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,21 +15,21 @@ public class UserController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserRequestDTO userRequestDTO) {
+    public ApiResponse<UserResponseDTO> createUser(@RequestBody UserRequestDTO userRequestDTO) {
         userService.createUser(userRequestDTO);
         UserResponseDTO responseDTO = userService.readOneUser(userRequestDTO.getUserName());
-        return ResponseEntity.ok(responseDTO);
+        return new ApiResponse<>(200, "유저가 성공적으로 생성되었습니다.", responseDTO);
     }
 
     @GetMapping("/{username}")
-    public ResponseEntity<UserResponseDTO> getUser(@PathVariable("username") String username) {
+    public ApiResponse<UserResponseDTO> getUser(@PathVariable("username") String username) {
         UserResponseDTO responseDTO = userService.readOneUser(username);
-        return ResponseEntity.ok(responseDTO);
+        return new ApiResponse<>(200,"유저를 성공적으로 조회하였습니다.", responseDTO);
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
+    public ApiResponse<List<UserResponseDTO>> getAllUsers() {
         List<UserResponseDTO> users = userService.readAllUsers();
-        return ResponseEntity.ok(users);
+        return new ApiResponse<>(200,"유저목록을 성공적으로 조회하였습니다.", users);
     }
 }

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 @Getter
 @Setter
 public class UserRequestDTO {
-    private Long id;
+    private String userId;
     private String userName;
     private Long studentClubId;
     private String role;
