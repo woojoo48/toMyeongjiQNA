@@ -6,12 +6,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 public class AnswerService {
-    @Autowired
+
     private AnswerRepository answerRepository;
-    @Autowired
     private QuestionRepository questionRepository;
+
+    public AnswerService(AnswerRepository answerRepository, QuestionRepository questionRepository) {
+        this.answerRepository = answerRepository;
+        this.questionRepository = questionRepository;
+    }
 
     @Transactional
     public Long createAnswer(AnswerRequestDTO answerRequestDTO, Long questionId) {
@@ -27,8 +33,7 @@ public class AnswerService {
         answer.setContents(answerRequestDTO.getContents());
         answer.setQuestion(question);
 
-        Answer savedAnswer = answerRepository.save(answer);
-        return savedAnswer.getId();
+        return answerRepository.save(answer).getId();
     }
 
     @Transactional(readOnly = true)
@@ -36,17 +41,15 @@ public class AnswerService {
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new CustomException(400, NOT_FOUND_QUESTION + " ID: " + questionId));
 
-        Answer answer = question.getAnswer();
-        if (answer == null) {
-            throw new CustomException(400, NOT_FOUND_ANSWER);
-        }
-
-        AnswerResponseDTO dto = new AnswerResponseDTO();
-        dto.setId(answer.getId());
-        dto.setQuestionTitle(answer.getQuestionTitle());
-        dto.setContents(answer.getContents());
-        dto.setQuestionId(questionId);
-
-        return dto;
+        return Optional.ofNullable(question.getAnswer())
+                .map(answer -> {
+                    AnswerResponseDTO dto = new AnswerResponseDTO();
+                    dto.setId(answer.getId());
+                    dto.setQuestionTitle(answer.getQuestionTitle());
+                    dto.setContents(answer.getContents());
+                    dto.setQuestionId(questionId);
+                    return dto;
+                })
+                .orElseThrow(() -> new CustomException(400, NOT_FOUND_ANSWER));
     }
 }

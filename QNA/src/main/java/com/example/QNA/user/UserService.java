@@ -9,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.Optional;
 
 import static com.example.QNA.global.ErrorMSG.*;
 
@@ -44,7 +46,6 @@ public class UserService {
             throw new CustomException(400, NOT_STUDENT_CLUB);
         }
 
-
         StudentClub studentClub = studentClubRepository.findById(studentClubId)
                 .orElseThrow(() -> new CustomException(400, NOT_STUDENT_CLUB + " ID: " + studentClubId));
 
@@ -57,46 +58,38 @@ public class UserService {
         userRepository.save(userEntity);
     }
 
+    //DTO객체 변환
+    private UserResponseDTO convertToDTO(User user) {
+        UserResponseDTO dto = new UserResponseDTO();
+        dto.setUserId(user.getUserId());
+        dto.setUserName(user.getUserName());
+        dto.setRole(user.getRole());
+
+        Optional.ofNullable(user.getStudentClub())
+                .ifPresent(club -> {
+                    dto.setStudentClubName(club.getStudentClubName());
+                    Optional.ofNullable(club.getCollege())
+                            .ifPresent(college -> dto.setCollegeName(college.getCollegeName()));
+                });
+
+        return dto;
+    }
     @Transactional(readOnly = true)
     public UserResponseDTO readOneUser(String username) {
         if (username == null || username.trim().isEmpty()) {
             throw new CustomException(400, NOT_USER_NAME);
         }
 
-        User userEntity = userRepository.findByUserName(username)
+        return userRepository.findByUserName(username)
+                .map(this::convertToDTO)
                 .orElseThrow(() -> new CustomException(400, "사용자를 찾을 수 없습니다: " + username));
-
-        UserResponseDTO dto = new UserResponseDTO();
-        dto.setUserId(userEntity.getUserId());
-        dto.setUserName(userEntity.getUserName());
-        dto.setRole(userEntity.getRole());
-
-        if (userEntity.getStudentClub() != null) {
-            dto.setStudentClubName(userEntity.getStudentClub().getStudentClubName());
-
-            if (userEntity.getStudentClub().getCollege() != null) {
-                dto.setCollegeName(userEntity.getStudentClub().getCollege().getCollegeName());
-            }
-        }
-
-        return dto;
     }
 
     @Transactional(readOnly = true)
     public List<UserResponseDTO> readAllUsers() {
-            List<User> userList = userRepository.findAll();
-
-            List<UserResponseDTO> userListDTO = new ArrayList<>();
-            for (User user : userList) {
-                UserResponseDTO dtos = new UserResponseDTO();
-                dtos.setUserId(user.getUserId());
-                dtos.setUserName(user.getUserName());
-                dtos.setRole(user.getRole());
-
-
-                userListDTO.add(dtos);
-            }
-            return userListDTO;
+        return userRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 }
 
