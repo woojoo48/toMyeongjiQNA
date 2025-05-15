@@ -8,6 +8,9 @@ public class ErrorMSG {
     public static final String NOT_FOUND_QUESTION = "질문을 찾을 수 없습니다.";
     public static final String ALREADY_HAS_ANSWER = "해당 질문에는 이미 답변이 존재합니다.";
     public static final String NOT_FOUND_ANSWER = "해당 질문에 대한 답변이 없습니다.";
+    public static final String UNAUTHORIZED_QUESTION_UPDATE = "질문 작성자만 수정할 수 있습니다.";
+    public static final String UNAUTHORIZED_QUESTION_DELETE = "질문 작성자만 삭제할 수 있습니다.";
+    public static final String UNAUTHORIZED_ANSWER_UPDATE = "관리자만 답변을 수정할 수 있습니다.";
 
     //userService
     public static final String NOT_USER_ID = "사용자 ID가 존재하지 않습니다.";

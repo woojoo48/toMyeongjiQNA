@@ -32,4 +32,20 @@ public class QuestionController {
         List<QuestionResponseDTO> questions = questionService.readAllQuestion();
         return new ApiResponse<>(200, "질문목록을 정상적으로 조회하였습니다", questions);
     }
+
+    @PutMapping("/{id}")
+    public ApiResponse<QuestionResponseDTO> updateQuestion(
+            @PathVariable("id") Long id,
+            @RequestBody QuestionRequestDTO dto) {
+        QuestionResponseDTO updatedQuestion = questionService.updateQuestion(id, dto);
+        return new ApiResponse<>(200, "질문이 정상적으로 수정되었습니다.", updatedQuestion);
+    }
+
+    @DeleteMapping("/{id}")
+    public ApiResponse<Void> deleteQuestion(
+            @PathVariable("id") Long id,
+            @RequestParam("userId") Long userId) {
+        questionService.deleteQuestion(id, userId);
+        return new ApiResponse<>(200, "질문이 정상적으로 삭제되었습니다.", null);
+    }
 }

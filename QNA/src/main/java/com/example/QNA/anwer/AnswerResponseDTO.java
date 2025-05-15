@@ -1,4 +1,4 @@
-package com.example.QNA.Question;
+package com.example.QNA.anwer;
 
 import lombok.Getter;
 import lombok.Setter;

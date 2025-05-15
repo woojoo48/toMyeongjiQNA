@@ -1,5 +1,6 @@
-package com.example.QNA.Question;
+package com.example.QNA.anwer;
 
+import com.example.QNA.Question.Question;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

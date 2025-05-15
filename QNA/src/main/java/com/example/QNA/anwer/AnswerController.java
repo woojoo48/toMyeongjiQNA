@@ -1,5 +1,6 @@
-package com.example.QNA.Question;
+package com.example.QNA.anwer;
 
+import com.example.QNA.Question.QuestionService;
 import com.example.QNA.global.ApiResponse;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,4 +36,13 @@ public class AnswerController {
         AnswerResponseDTO answerResponseDTO = answerService.readAnswer(questionId);
         return new ApiResponse<>(200, "답변을 정상적으로 조회하였습니다.", answerResponseDTO);
     }
+
+//    @PutMapping("/{answerId}")
+//    public ApiResponse<AnswerResponseDTO> updateAnswer(
+//            @PathVariable("answerId") Long answerId,
+//            @RequestBody AnswerRequestDTO answerRequestDTO,
+//            @RequestParam("userId") Long userId) {
+//        AnswerResponseDTO updatedAnswer = answerService.updateAnswer(answerId, answerRequestDTO, userId);
+//        return new ApiResponse<>(200, "답변이 정상적으로 수정되었습니다.", updatedAnswer);
+//    }
 }

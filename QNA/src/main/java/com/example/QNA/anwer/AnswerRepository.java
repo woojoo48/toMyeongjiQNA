@@ -1,6 +1,5 @@
-package com.example.QNA.Question;
+package com.example.QNA.anwer;
 
-import com.example.QNA.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
