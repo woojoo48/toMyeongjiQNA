@@ -1,4 +1,4 @@
-package com.example.QNA.Question;
+package com.example.QNA.question;
 
 import com.example.QNA.anwer.Answer;
 import jakarta.persistence.*;

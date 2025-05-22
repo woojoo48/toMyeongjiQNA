@@ -1,9 +1,9 @@
-package com.example.QNA.Question;
+package com.example.QNA.question;
 
 import com.example.QNA.anwer.AnswerRepository;
 import com.example.QNA.user.User;
 import com.example.QNA.user.UserRepository;
-import mapper.QNAMapper;
+import com.example.QNA.mapper.QNAMapper;
 import org.springframework.stereotype.Service;
 import com.example.QNA.global.CustomException;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,9 +60,6 @@ public class QuestionService {
 
     @Transactional(readOnly = true)
     public List<QuestionResponseDTO> readAllQuestion() {
-        //스트림을 사용한 이유는 컬렉션을 처리하는데 더 적합하기 때문
-        //옵셔널은 단일 값에 대한 null 처리 적합 -> 그러나 스트림은 컬렉션의 여러 요소를 처리하는데 적합
-        //이 메서드의 경우 모든 질문 컬렉션이므로 여러 요소를 처리하기 위해 사용
         return questionRepository.findAll().stream()
                 .map(qnaMapper::toQuestionDto)
                 .collect(Collectors.toList());

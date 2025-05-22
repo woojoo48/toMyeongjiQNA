@@ -1,9 +1,9 @@
-package mapper;
+package com.example.QNA.mapper;
 
 import com.example.QNA.anwer.Answer;
 import com.example.QNA.anwer.AnswerResponseDTO;
-import com.example.QNA.Question.Question;
-import com.example.QNA.Question.QuestionResponseDTO;
+import com.example.QNA.question.Question;
+import com.example.QNA.question.QuestionResponseDTO;
 import com.example.QNA.user.User;
 import com.example.QNA.user.UserResponseDTO;
 import org.mapstruct.Mapper;

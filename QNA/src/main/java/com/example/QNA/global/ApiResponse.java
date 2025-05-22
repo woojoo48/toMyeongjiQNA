@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Data
-//빌드업패턴
+//빌더 패턴
 public class ApiResponse<T> {
     private int statusCode;
     private String statusMessage;

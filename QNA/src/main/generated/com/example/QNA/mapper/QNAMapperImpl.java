@@ -1,10 +1,10 @@
-package mapper;
+package com.example.QNA.mapper;
 
-import com.example.QNA.Question.Question;
-import com.example.QNA.Question.QuestionResponseDTO;
 import com.example.QNA.anwer.Answer;
 import com.example.QNA.anwer.AnswerResponseDTO;
 import com.example.QNA.college.College;
+import com.example.QNA.question.Question;
+import com.example.QNA.question.QuestionResponseDTO;
 import com.example.QNA.studentclub.StudentClub;
 import com.example.QNA.user.User;
 import com.example.QNA.user.UserResponseDTO;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-05-15T11:36:12+0900",
+    date = "2025-05-22T09:47:43+0900",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.12 (JetBrains s.r.o.)"
 )
 @Component
@@ -48,7 +48,7 @@ public class QNAMapperImpl implements QNAMapper {
 
         answerResponseDTO.setQuestionId( answerQuestionId( answer ) );
         answerResponseDTO.setId( answer.getId() );
-        answerResponseDTO.setQuestionTitle( answer.getQuestionTitle() );
+        answerResponseDTO.setAnswerTitle( answer.getAnswerTitle() );
         answerResponseDTO.setContents( answer.getContents() );
 
         return answerResponseDTO;

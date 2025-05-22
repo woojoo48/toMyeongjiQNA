@@ -1,4 +1,4 @@
-package com.example.QNA.Question;
+package com.example.QNA.question;
 
 import com.example.QNA.global.ApiResponse;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +20,6 @@ public class QuestionController {
         return new ApiResponse<>(200, "질문이 정상적으로 생성되었습니다.", dto);
     }
 
-    //질문 번호로 주소 찍어야 함
     @GetMapping("/{id}")
     public ApiResponse<QuestionResponseDTO> getQuestion(@PathVariable("id") Long id) {
         QuestionResponseDTO question = questionService.readOneQuestion(id);

@@ -1,13 +1,13 @@
 package com.example.QNA.anwer;
 
-import com.example.QNA.Question.Question;
-import com.example.QNA.Question.QuestionRepository;
+import com.example.QNA.question.Question;
+import com.example.QNA.question.QuestionRepository;
 import com.example.QNA.global.CustomException;
 import static com.example.QNA.global.ErrorMSG.*;
 
 import com.example.QNA.user.User;
 import com.example.QNA.user.UserRepository;
-import mapper.QNAMapper;
+import com.example.QNA.mapper.QNAMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,11 +34,22 @@ public class AnswerService {
             throw new CustomException(400, ALREADY_HAS_ANSWER);
         }
 
+        String title = answerRequestDTO.getAnswerTitle().trim();
+        String contents = answerRequestDTO.getContents().trim();
+
+        if (title.isEmpty()) {
+            throw new CustomException(400, NOT_TITLE);
+        }
+
+        if (contents.isEmpty()) {
+            throw new CustomException(400, NOT_CONTENTS);
+        }
+
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new CustomException(400, NOT_FOUND_QUESTION + " ID: " + questionId));
 
         Answer answer = new Answer();
-        answer.setQuestionTitle(answerRequestDTO.getQuestionTitle());
+        answer.setAnswerTitle(answerRequestDTO.getAnswerTitle());
         answer.setContents(answerRequestDTO.getContents());
         answer.setQuestion(question);
 
@@ -55,31 +66,36 @@ public class AnswerService {
                 .orElseThrow(() -> new CustomException(400, NOT_FOUND_ANSWER));
     }
 
-//    @Transactional
-//    public AnswerResponseDTO updateAnswer(Long answerId, AnswerRequestDTO answerRequestDTO, Long userId) {
-//        Answer answer = answerRepository.findById(answerId)
-//                .orElseThrow(() -> new CustomException(400, NOT_FOUND_ANSWER));
-//
-//        User user = userRepository.findById(userId)
-//                .orElseThrow(() -> new CustomException(400, NOT_FOUND_USER));
-//
-//        if ("MEMBER".equals(user.getRole())) {
-//            throw new CustomException(403, UNAUTHORIZED_ANSWER_UPDATE);
-//        }
-//
-//        String contents = answerRequestDTO.getContents().trim();
-//        if (contents.isEmpty()) {
-//            throw new CustomException(400, NOT_CONTENTS);
-//        }
-//
-//        String questionTitle = answerRequestDTO.getQuestionTitle().trim();
-//        if (!questionTitle.isEmpty()) {
-//            answer.setQuestionTitle(questionTitle);
-//        }
-//
-//        answer.setContents(contents);
-//
-//        Answer updatedAnswer = answerRepository.save(answer);
-//        return qnaMapper.toAnswerDto(updatedAnswer);
-//    }
+    @Transactional
+    public AnswerResponseDTO updateAnswer(Long answerId, AnswerRequestDTO answerRequestDTO, Long userId) {
+        Answer answer = answerRepository.findById(answerId)
+                .orElseThrow(() -> new CustomException(400, NOT_FOUND_ANSWER));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(400, NOT_FOUND_USER));
+
+        String answerTitle = answerRequestDTO.getAnswerTitle().trim();
+        String contents = answerRequestDTO.getContents().trim();
+        if(answerTitle.isEmpty()){
+            throw new CustomException(400, NOT_TITLE);
+        }
+
+        if (contents.isEmpty()) {
+            throw new CustomException(400, NOT_CONTENTS);
+        }
+
+        if ("Student".equals(user.getRole())) {
+            throw new CustomException(403, UNAUTHORIZED_ANSWER_UPDATE);
+        } else{
+            String questionTitle = answerRequestDTO.getAnswerTitle().trim();
+            if (!questionTitle.isEmpty()) {
+                answer.setAnswerTitle(questionTitle);
+            }
+
+            answer.setContents(contents);
+
+            Answer updatedAnswer = answerRepository.save(answer);
+            return qnaMapper.toAnswerDto(updatedAnswer);
+        }
+    }
 }

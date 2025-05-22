@@ -1,4 +1,4 @@
-package com.example.QNA.Question;
+package com.example.QNA.question;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class QuestionRequestDTO {
 
-    private Long id; //userId
+    private Long id;
     private String title;
     private String content;
 }
