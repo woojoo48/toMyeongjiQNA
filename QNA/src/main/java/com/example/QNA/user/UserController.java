@@ -14,10 +14,10 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/create")
-    public ApiResponse<UserResponseDTO> createUser(@RequestBody UserRequestDTO userRequestDTO) {
-        userService.createUser(userRequestDTO);
-        UserResponseDTO responseDTO = userService.readOneUser(userRequestDTO.getUserName());
+    @PostMapping("/sign-up")
+    public ApiResponse<UserResponseDTO> signUpUser(@RequestBody UserSignUpRequestDTO userSignUpRequestDTO) {
+        userService.signUpUser(userSignUpRequestDTO);
+        UserResponseDTO responseDTO = userService.readOneUser(userSignUpRequestDTO.getUserName());
         return new ApiResponse<>(200, "유저가 성공적으로 생성되었습니다.", responseDTO);
     }
 
