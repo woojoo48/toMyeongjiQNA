@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-05-22T11:16:36+0900",
+    date = "2025-05-27T23:29:44+0900",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.12 (JetBrains s.r.o.)"
 )
 @Component
@@ -60,15 +60,17 @@ public class QNAMapperImpl implements QNAMapper {
             return null;
         }
 
-        UserResponseDTO userResponseDTO = new UserResponseDTO();
+        UserResponseDTO.UserResponseDTOBuilder userResponseDTO = UserResponseDTO.builder();
 
-        userResponseDTO.setStudentClubName( userStudentClubStudentClubName( user ) );
-        userResponseDTO.setCollegeName( userStudentClubCollegeCollegeName( user ) );
-        userResponseDTO.setUserId( user.getUserId() );
-        userResponseDTO.setUserName( user.getUserName() );
-        userResponseDTO.setRole( user.getRole() );
+        userResponseDTO.studentClubName( userStudentClubStudentClubName( user ) );
+        userResponseDTO.collegeName( userStudentClubCollegeCollegeName( user ) );
+        userResponseDTO.userId( user.getUserId() );
+        userResponseDTO.userName( user.getUserName() );
+        userResponseDTO.password( user.getPassword() );
+        userResponseDTO.email( user.getEmail() );
+        userResponseDTO.role( user.getRole() );
 
-        return userResponseDTO;
+        return userResponseDTO.build();
     }
 
     private Long questionUserId(Question question) {

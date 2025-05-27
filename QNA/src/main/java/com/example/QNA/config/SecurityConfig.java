@@ -48,7 +48,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // 인증 없이 접근 가능한 경로
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/user/create").permitAll()
+                        .requestMatchers("/api/user/sign-up").permitAll()
+                        .requestMatchers("/api/user/login").permitAll()
                         .requestMatchers("/error").permitAll()
 
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")

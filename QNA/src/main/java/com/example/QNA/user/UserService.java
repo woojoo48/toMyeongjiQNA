@@ -4,6 +4,7 @@ import com.example.QNA.global.CustomException;
 import com.example.QNA.studentclub.StudentClub;
 import com.example.QNA.studentclub.StudentClubRepository;
 import com.example.QNA.mapper.QNAMapper;
+import com.example.QNA.validate.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ public class UserService {
     private final StudentClubRepository studentClubRepository;
     private final QNAMapper qnaMapper;
     private final PasswordEncoder passwordEncoder;
+    private final JwtUtil jwtUtil;
 
     @Transactional
     public void signUpUser(UserSignUpRequestDTO userSignUpRequestDTO) {
@@ -73,6 +75,39 @@ public class UserService {
 
         userRepository.save(userEntity);
     }
+
+    @Transactional(readOnly = true)
+    public UserLoginResponseDTO login(UserLoginRequestDTO userLoginRequestDTO) {
+        String userId = userLoginRequestDTO.getUserId();
+        String password = userLoginRequestDTO.getPassword();
+
+        if (userId == null || userId.trim().isEmpty()) {
+            throw new CustomException(400, NULL_USER_ID);
+        }
+        if (password == null || password.trim().isEmpty()) {
+            throw new CustomException(400, NULL_USER_PASSWORD);
+        }
+
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new CustomException(400, NOT_USER_ID));
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new CustomException(400, NOT_MATCH_PASSWORD);
+        }
+
+        String accessToken = jwtUtil.generateToken(user.getUserId(), user.getRole().toString());
+        Long expiresIn = jwtUtil.getAccessTokenExpiration() / 1000;
+
+        return UserLoginResponseDTO.builder()
+                .accessToken(accessToken)
+                .expiresIn(expiresIn)
+                .userId(user.getUserId())
+                .userName(user.getUserName())
+                .email(user.getEmail())
+                .role(user.getRole().toString())
+                .build();
+    }
+
 
     @Transactional(readOnly = true)
     public UserResponseDTO readOneUser(String username) {

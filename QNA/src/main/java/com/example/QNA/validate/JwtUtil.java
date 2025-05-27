@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.security.Keys;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+@Getter
 @Component
 public class JwtUtil {
 
@@ -32,6 +34,7 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
+    //토큰 추출
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
@@ -112,4 +115,5 @@ public class JwtUtil {
         }
         return null;
     }
+
 }

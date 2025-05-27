@@ -21,6 +21,12 @@ public class UserController {
         return new ApiResponse<>(200, "유저가 성공적으로 생성되었습니다.", responseDTO);
     }
 
+    @PostMapping("/login")
+    public ApiResponse<UserLoginResponseDTO> login(@RequestBody UserLoginRequestDTO userLoginRequestDTO) {
+        UserLoginResponseDTO responseDTO = userService.login(userLoginRequestDTO);
+        return new ApiResponse<>(200, "로그인이 성공하였습니다.", responseDTO);
+    }
+
     @GetMapping("/{username}")
     public ApiResponse<UserResponseDTO> getUser(@PathVariable("username") String username) {
         UserResponseDTO responseDTO = userService.readOneUser(username);
