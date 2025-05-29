@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-05-27T23:29:44+0900",
+    date = "2025-05-29T15:16:31+0900",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 17.0.12 (JetBrains s.r.o.)"
 )
 @Component
@@ -27,7 +27,7 @@ public class QNAMapperImpl implements QNAMapper {
 
         QuestionResponseDTO questionResponseDTO = new QuestionResponseDTO();
 
-        questionResponseDTO.setUserId( questionUserId( question ) );
+        questionResponseDTO.setUserId( questionUserUserId( question ) );
         questionResponseDTO.setUserName( questionUserUserName( question ) );
         questionResponseDTO.setId( question.getId() );
         questionResponseDTO.setTitle( question.getTitle() );
@@ -73,7 +73,7 @@ public class QNAMapperImpl implements QNAMapper {
         return userResponseDTO.build();
     }
 
-    private Long questionUserId(Question question) {
+    private String questionUserUserId(Question question) {
         if ( question == null ) {
             return null;
         }
@@ -81,11 +81,11 @@ public class QNAMapperImpl implements QNAMapper {
         if ( user == null ) {
             return null;
         }
-        Long id = user.getId();
-        if ( id == null ) {
+        String userId = user.getUserId();
+        if ( userId == null ) {
             return null;
         }
-        return id;
+        return userId;
     }
 
     private String questionUserUserName(Question question) {

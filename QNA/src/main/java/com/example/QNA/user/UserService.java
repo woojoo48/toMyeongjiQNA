@@ -125,8 +125,5 @@ public class UserService {
                 .map(qnaMapper::toUserDto)
                 .collect(Collectors.toList());
     }
-
-
-
 }
 

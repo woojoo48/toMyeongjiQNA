@@ -14,7 +14,7 @@ import org.mapstruct.factory.Mappers;
 public interface QNAMapper {
     QNAMapper INSTANCE = Mappers.getMapper(QNAMapper.class);
 
-    @Mapping(target = "userId", source = "user.id")
+    @Mapping(target = "userId", source = "user.userId")
     @Mapping(target = "userName", source = "user.userName")
     @Mapping(target = "hasAnswer", expression = "java(question.getAnswer() != null)")
     QuestionResponseDTO toQuestionDto(Question question);

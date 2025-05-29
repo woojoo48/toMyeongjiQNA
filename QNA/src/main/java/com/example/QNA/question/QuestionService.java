@@ -4,6 +4,7 @@ import com.example.QNA.anwer.AnswerRepository;
 import com.example.QNA.user.User;
 import com.example.QNA.user.UserRepository;
 import com.example.QNA.mapper.QNAMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.example.QNA.global.CustomException;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,22 +16,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class QuestionService {
     private final QuestionRepository questionRepository;
     private final UserRepository userRepository;
     private final AnswerRepository answerRepository;
     private final QNAMapper qnaMapper;
 
-    public QuestionService(QuestionRepository questionRepository, UserRepository userRepository, AnswerRepository answerRepository, QNAMapper qnaMapper) {
-        this.questionRepository = questionRepository;
-        this.userRepository = userRepository;
-        this.answerRepository = answerRepository;
-        this.qnaMapper = qnaMapper;
-    }
-
     @Transactional
-    public Long createQuestion(QuestionRequestDTO questionDTO) {
-        User user = userRepository.findById(questionDTO.getId())
+    public Long createQuestion(QuestionRequestDTO questionDTO, String userId) {
+        User user = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new CustomException(400, NOT_FOUND_USER));
 
         String title = questionDTO.getTitle().trim();
@@ -66,11 +61,15 @@ public class QuestionService {
     }
 
     @Transactional
-    public QuestionResponseDTO updateQuestion(Long id, QuestionRequestDTO questionDTO) {
+    public QuestionResponseDTO updateQuestion(Long id, QuestionRequestDTO questionDTO, String userId) {
         Question question = questionRepository.findById(id)
                 .orElseThrow(() -> new CustomException(400, NOT_FOUND_QUESTION + " ID: " + id));
 
-        if (!question.getUser().getId().equals(questionDTO.getId())) {
+        // JWT 토큰에서 받은 userId로 권한 확인
+        User currentUser = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new CustomException(400, NOT_FOUND_USER));
+
+        if (!question.getUser().getUserId().equals(currentUser.getUserId())) {
             throw new CustomException(403, UNAUTHORIZED_QUESTION_UPDATE);
         }
 
@@ -93,11 +92,14 @@ public class QuestionService {
     }
 
     @Transactional
-    public void deleteQuestion(Long id, Long userId) {
+    public void deleteQuestion(Long id, String userId) {
         Question question = questionRepository.findById(id)
                 .orElseThrow(() -> new CustomException(400, NOT_FOUND_QUESTION + " ID: " + id));
 
-        if (!question.getUser().getId().equals(userId)) {
+        User currentUser = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new CustomException(400, NOT_FOUND_USER));
+
+        if (!question.getUser().getUserId().equals(currentUser.getUserId())) {
             throw new CustomException(403, UNAUTHORIZED_QUESTION_DELETE);
         }
 

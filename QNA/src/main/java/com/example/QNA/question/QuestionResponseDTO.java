@@ -9,7 +9,7 @@ public class QuestionResponseDTO {
     private Long id;
     private String title;
     private String contents;
-    private Long userId;
+    private String userId;
     private String userName;
     private boolean hasAnswer;
 }

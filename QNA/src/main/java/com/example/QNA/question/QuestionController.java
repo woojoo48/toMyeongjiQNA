@@ -1,23 +1,25 @@
 package com.example.QNA.question;
 
 import com.example.QNA.global.ApiResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/question")
+@RequiredArgsConstructor
 public class QuestionController {
     private final QuestionService questionService;
 
-    public QuestionController(QuestionService questionService) {
-        this.questionService = questionService;
-    }
-
     @PostMapping("/create")
-    public ApiResponse<QuestionRequestDTO> createQuestion(@RequestBody QuestionRequestDTO dto) {
-        Long newQuestionId = questionService.createQuestion(dto);
-        return new ApiResponse<>(200, "질문이 정상적으로 생성되었습니다.", dto);
+    public ApiResponse<QuestionResponseDTO> createQuestion(@RequestBody QuestionRequestDTO dto, Authentication authentication) {
+        String userId = authentication.getName();
+        Long newQuestionId = questionService.createQuestion(dto, userId);
+
+        QuestionResponseDTO responseDTO = questionService.readOneQuestion(newQuestionId);
+        return new ApiResponse<>(200, "질문이 정상적으로 생성되었습니다.", responseDTO);
     }
 
     @GetMapping("/{id}")
@@ -33,17 +35,15 @@ public class QuestionController {
     }
 
     @PutMapping("/{id}")
-    public ApiResponse<QuestionResponseDTO> updateQuestion(
-            @PathVariable("id") Long id,
-            @RequestBody QuestionRequestDTO dto) {
-        QuestionResponseDTO updatedQuestion = questionService.updateQuestion(id, dto);
+    public ApiResponse<QuestionResponseDTO> updateQuestion(@PathVariable("id") Long id, @RequestBody QuestionRequestDTO dto,Authentication authentication) {
+        String userId = authentication.getName();
+        QuestionResponseDTO updatedQuestion = questionService.updateQuestion(id, dto, userId);
         return new ApiResponse<>(200, "질문이 정상적으로 수정되었습니다.", updatedQuestion);
     }
 
     @DeleteMapping("/{id}")
-    public ApiResponse<Void> deleteQuestion(
-            @PathVariable("id") Long id,
-            @RequestParam("userId") Long userId) {
+    public ApiResponse<Void> deleteQuestion(@PathVariable("id") Long id, Authentication authentication) {
+        String userId = authentication.getName();
         questionService.deleteQuestion(id, userId);
         return new ApiResponse<>(200, "질문이 정상적으로 삭제되었습니다.", null);
     }
