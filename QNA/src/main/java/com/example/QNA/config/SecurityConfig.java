@@ -4,6 +4,7 @@ import com.example.QNA.validate.JwtAuthenticationFilter;
 import com.example.QNA.validate.UserDetailServiceImpl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,16 +21,23 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import java.util.Arrays;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final UserDetailServiceImpl userDetailService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final CorsConfigurationSource corsConfigurationSource;
+
+    public SecurityConfig(
+            UserDetailServiceImpl userDetailService,
+            JwtAuthenticationFilter jwtAuthenticationFilter,
+            @Qualifier("corsConfigurationSource") CorsConfigurationSource corsConfigurationSource) {
+        this.userDetailService = userDetailService;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
+        this.corsConfigurationSource = corsConfigurationSource;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -38,7 +46,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
 //                // CORS 설정
 //                //프론트에서 백엔드 서버를 호출할 수 있도록 연결
-//                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
 
                 // 세션 사용하지 않음 -> stateless = 세션 사용X 설정
                 .sessionManagement(session -> session
@@ -51,6 +59,11 @@ public class SecurityConfig {
                         .requestMatchers("/api/user/sign-up").permitAll()
                         .requestMatchers("/api/user/login").permitAll()
                         .requestMatchers("/error").permitAll()
+
+                        //Swagger 접근 경로
+                        .requestMatchers("/swagger-ui/**").permitAll()
+                        .requestMatchers("/v3/api-docs/**").permitAll()
+                        .requestMatchers("/swagger-ui.html").permitAll()
 
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/answer/**").hasAnyRole("ADMIN")
@@ -85,24 +98,4 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
-
-//    @Bean
-//    public CorsConfigurationSource corsConfigurationSource() {
-//        CorsConfiguration configuration = new CorsConfiguration();
-//
-//        configuration.setAllowedOriginPatterns(Arrays.asList("*"));
-//
-//        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-//
-//        configuration.setAllowedHeaders(Arrays.asList("*"));
-//
-//        configuration.setAllowCredentials(true);
-//
-//        configuration.setExposedHeaders(Arrays.asList("Authorization"));
-//
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", configuration);
-//        return source;
-//    }
-    // cors config  빼보기
 }

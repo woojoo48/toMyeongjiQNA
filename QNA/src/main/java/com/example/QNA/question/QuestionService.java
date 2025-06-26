@@ -65,7 +65,6 @@ public class QuestionService {
         Question question = questionRepository.findById(id)
                 .orElseThrow(() -> new CustomException(400, NOT_FOUND_QUESTION + " ID: " + id));
 
-        // JWT 토큰에서 받은 userId로 권한 확인
         User currentUser = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new CustomException(400, NOT_FOUND_USER));
 

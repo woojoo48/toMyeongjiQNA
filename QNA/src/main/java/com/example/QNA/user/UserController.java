@@ -1,18 +1,17 @@
 package com.example.QNA.user;
 
 import com.example.QNA.global.ApiResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/user")
 public class UserController {
     private final UserService userService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     @PostMapping("/sign-up")
     public ApiResponse<UserResponseDTO> signUpUser(@RequestBody UserSignUpRequestDTO userSignUpRequestDTO) {
